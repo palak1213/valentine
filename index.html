@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine 💕</title>
+
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #fbc2eb, #f8cdda);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+  }
+
+  .card {
+    background: white;
+    width: 90%;
+    max-width: 360px;
+    padding: 30px 20px 40px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .emoji { font-size: 64px; }
+
+  h2 {
+    font-size: 20px;
+    margin: 20px 0 30px;
+    min-height: 56px;
+  }
+
+  /* Blinking cursor */
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 20px;
+    background: #ff4d6d;
+    margin-left: 4px;
+    animation: blink 1s infinite;
+    vertical-align: bottom;
+  }
+
+  @keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+  }
+
+  .buttons {
+    position: relative;
+    height: 90px;
+  }
+
+  button {
+    padding: 14px 36px;
+    border-radius: 30px;
+    border: none;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  #yesBtn {
+    background: #ff4d6d;
+    color: white;
+  }
+
+  #noBtn {
+    background: #eee;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Floating NO text */
+  .floating-no {
+    position: absolute;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ff4d6d;
+    animation: floatUp 1.4s ease-out forwards;
+    pointer-events: none;
+  }
+
+  @keyframes floatUp {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-40px); }
+  }
+
+  /* Floating hearts */
+  .heart {
+    position: absolute;
+    color: #ff4d6d;
+    font-size: 18px;
+    animation: heartFloat 2s ease-out forwards;
+    pointer-events: none;
+  }
+
+  @keyframes heartFloat {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(-60px) scale(1.5); }
+  }
+
+  .share {
+    margin-top: 35px;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="emoji">🐱💗</div>
+
+  <h2 id="typing">
+    <span id="text"></span><span class="cursor"></span>
+  </h2>
+
+  <div class="buttons">
+    <button id="yesBtn" onclick="yesClick()">Yes</button>
+    <button id="noBtn" onclick="noClick()">No</button>
+  </div>
+
+  <div class="share" onclick="sharePage()">📤 Share this</div>
+</div>
+
+<script>
+  /* Typing animation with sound + hearts */
+  const message = "Vishu, will you be my Valentine?";
+  const textEl = document.getElementById("text");
+  const card = document.querySelector(".card");
+  let i = 0;
+
+  const typingSound = new Audio(
+    "https://assets.mixkit.co/sfx/preview/mixkit-keyboard-typing-1386.mp3"
+  );
+
+  function typeText() {
+    if (i < message.length) {
+      textEl.textContent += message.charAt(i);
+      i++;
+
+      typingSound.currentTime = 0;
+      typingSound.play();
+
+      createHeart();
+      setTimeout(typeText, 80);
+    }
+  }
+
+  typeText();
+
+  function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerText = "❤";
+
+    heart.style.left = Math.random() * card.offsetWidth + "px";
+    heart.style.bottom = "20px";
+
+    card.appendChild(heart);
+    setTimeout(() => heart.remove(), 2000);
+  }
+
+  function noClick() {
+    const btn = document.getElementById("noBtn");
+
+    if (navigator.vibrate) navigator.vibrate(120);
+
+    const maxX = card.offsetWidth / 2 - 60;
+    const x = Math.random() * maxX * 2 - maxX;
+    const y = Math.random() * 50;
+    btn.style.transform = `translate(${x}px, ${y}px)`;
+
+    const float = document.createElement("div");
+    float.innerText = "No 😳";
+    float.className = "floating-no";
+    float.style.left = btn.offsetLeft + 20 + "px";
+    float.style.top = btn.offsetTop + "px";
+
+    card.appendChild(float);
+    setTimeout(() => float.remove(), 1400);
+  }
+
+  function yesClick() {
+    card.innerHTML = `
+      <div style="font-size:64px">💖🥰💖</div>
+      <h2>Yay! Vishu said YES 💕</h2>
+      <p style="color:#777">Best Valentine ever 💘</p>
+      <div class="share" onclick="sharePage()">📤 Share this</div>
+    `;
+  }
+
+  function sharePage() {
+    const text = "Someone asked me the cutest Valentine question 💕";
+    const url = window.location.href;
+
+    if (navigator.share) {
+      navigator.share({ title: "Valentine 💖", text, url });
+    } else {
+      window.open(
+        `https://wa.me/?text=${encodeURIComponent(text + "  " + url)}`,
+        "_blank"
+      );
+    } 
+  }
+      
+</script>
+
+</body>
+</html>  
+
+    
